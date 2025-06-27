@@ -42,7 +42,7 @@ def home():
     elif i == 2:
         PLAYER.location = "Street"
     elif i == 3:
-        PHONE.handle()
+        PHONE.handle(MISSIONS, PLAYER)
 
 
 def bank():
@@ -142,9 +142,10 @@ CLEAN = int(input("1 - 3: "))
 talk("fuck lets go")
 
 # Global Variables
-global phone_ringing, caller
+global phone_ringing, caller, ringer
 phone_ringing = True
 caller = 1
+ringer = 0
 
 # Objects
 global PLAYER, BANK, MISSIONS, PHONE
@@ -155,5 +156,6 @@ PHONE = o.Phone(PLAYER.name)
 
 while True:
     os.system("clear")
+    MISSIONS.check(PLAYER)
     places[PLAYER.location]()
     save()

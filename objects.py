@@ -3,7 +3,7 @@ import os
 import time
 import random
 import link
-from main import MISSIONS
+#from main import MISSIONS
 
 def talk(say):
 	for word in say.split(" "):
@@ -97,24 +97,24 @@ class Missions:
 
 				return data
 
-		def check(self):
-				global phone_ringing, caller
+		def check(self, player):
+				import main
 
-				if PLAYER.mission == 1:
-						if PLAYER.mission_start == 0:
-								phone_ringing = True
-								caller = self.data["1"]["number"]
-						else:
-								pass
+				if player.mission == 1:
+					if player.mission_start == 0:
+						main.phone_ringing = True
+						main.caller = self.data["1"]["number"]
+					else:
+						pass
 
 		def get_dialogue(self, mission):
 				return self.data[str(mission)]["sd"]
 
-		def start(self, number):
-				global phone_ringing, ringer
-				PLAYER.mission_start = 1
-				phone_ringing = False
-				ringer = 0
+		def start(self, number, player):
+				import main
+				player.mission_start = 1
+				main.phone_ringing = False
+				main.ringer = 0
 
 
 class Phone:
@@ -151,24 +151,26 @@ class Phone:
 				with open(self.data_path, "w") as f:
 						json.dump(self.data, f)
 
-		def incoming_call(self):
-				if caller == 1: # Quest Giver
-						if PLAYER.mission_start == 0:
-								talk(MISSIONS.get_dialogue(PLAYER.mission))
-								MISSIONS.start(PLAYER.mission)
+		def incoming_call(self, missions, player):
+				import main
+				if main.caller == 1: # Quest Giver
+					if player.mission_start == 0:
+						talk(missions.get_dialogue(player.mission))
+						missions.start(player.mission, player)
 				else:
-						pass
+					pass
 				input("...")
 
-		def handle(self):
-				if phone_ringing:
-						print("The phone is ringing Do You want to answer?")
-						i = input("Y/N: ").lower()
-						if i == "y":
-								self.incoming_call()
-								return
-						else:
-								pass
+		def handle(self, missions, player):
+				import main
+				if main.phone_ringing:
+					print("The phone is ringing Do You want to answer?")
+					i = input("Y/N: ").lower()
+					if i == "y":
+						self.incoming_call(missions, player)
+						return
+					else:
+						pass
 
 				print("Please Enter a phone number to try and call")
 				i = int(input(": "))
@@ -184,4 +186,3 @@ class Phone:
 										return
 
 				input("Number Not Found...")
-
